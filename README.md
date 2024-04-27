@@ -1,4 +1,4 @@
-# *D*ouble *E*nded *D*ynamic *A*rrays in C
+# **D**ouble **E**nded **D**ynamic **A**rrays in C
 This is a [stb](https://github.com/nothings/stb) style library implementing a [Double Ended Dynamic Array](https://en.wikipedia.org/wiki/Double-ended_queue#:~:text=There%20are%20at%20least%20two,ends%2C%20sometimes%20called%20array%20deques.) in C.
 This is only for recreational purpose and not for any real world use. If you still want to use this in your project, feel free to do so at your own risk.
 
