@@ -6,18 +6,19 @@ This is only for recreational purpose and not for any real world use. If you sti
 
 All the functions exposed are C macros
 
-| Function          | Signature          | Description                                                   |
-| --------          | ---------          | -----------------------------------------------------------   |
-| deda\_type        | (name, type)       | declares a deda array type                                    |
-| deda\_init        | (deda)             | initialize the deda array with initial values                 |
-| deda\_push        | (deda, item)       | appends the item at the end of the deda array                 |
-| deda\_pop         | (deda)             | removes and returns the item from the end of the deda array   |
-| deda\_push\_front | (deda, item)       | prepends the item at the front of the deda array              |
-| deda\_pop\_front  | (deda)             | removes and returns the item from the front of the deda array |
-| deda\_get\_at     | (deda, idx result) | get and store the item at index `idx` to result variable      |
-| deda\_put\_at     | (deda, idx, item)  | replace the old item with the new one at index `idx`          |
-| deda\_insert\_at  | (deda, idx, item)  | insert the item at index `idx`                                |
-| deda\_delete\_at  | (deda, idx)        | removes the item at index `idx`                               |
+| Function          | Signature           | Description                                                   |
+| --------          | ---------           | -----------------------------------------------------------   |
+| deda\_type        | (name, type)        | declares a deda array type                                    |
+| deda\_init        | (deda)              | initialize the deda array with initial values                 |
+| deda\_push        | (deda, item)        | appends the item at the end of the deda array                 |
+| deda\_pop         | (deda)              | removes and returns the item from the end of the deda array   |
+| deda\_push\_front | (deda, item)        | prepends the item at the front of the deda array              |
+| deda\_pop\_front  | (deda)              | removes and returns the item from the front of the deda array |
+| deda\_get\_at     | (deda, idx result)  | get and store the item at index `idx` to result variable      |
+| deda\_put\_at     | (deda, idx, item)   | replace the old item with the new one at index `idx`          |
+| deda\_insert\_at  | (deda, idx, item)   | insert the item at index `idx`                                |
+| deda\_delete\_at  | (deda, idx)         | removes the item at index `idx`                               |
+| deda\_pop\_at     | (deda, idx, result) | stores the item at `idx` to result and deletes it             |
 
 # Example program
 ```C

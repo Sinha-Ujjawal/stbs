@@ -19,7 +19,7 @@
 #define DEDA_GROWTH_FACTOR     2.5
 #define DEDA_SHRINK_FACTOR     0.5
 #define DEDA_SHRINK_THRESHOLD  0.25
-#define DEDA_BEGIN_POSN_FACTOR 0.3
+#define DEDA_BEGIN_POSN_FACTOR 0.5
 
 /* `deda` is a structure matching below signature-
     `t` is a type parameter
@@ -50,7 +50,7 @@
     size_t new_begin              = (new_capacity) * DEDA_BEGIN_POSN_FACTOR;\
     typeof((deda)->data) new_data = malloc(sizeof(*(deda)->data) * (new_capacity));\
     for (size_t i = 0; i < (deda)->count; i++) {\
-        new_data[new_begin + i] = (deda)->data[(deda)->begin + i];\
+        new_data[(new_begin + i) % (new_capacity)] = (deda)->data[((deda)->begin + i) % (deda)->capacity];\
     }\
     free((deda)->data);\
     (deda)->capacity = (new_capacity);\
@@ -69,17 +69,17 @@
 }\
 
 #define deda_push(deda, item) {\
-    if ((deda)->begin + (deda)->count >= (deda)->capacity) {\
+    if ((deda)->count >= (deda)->capacity) {\
         _deda_grow(deda);\
     }\
-    (deda)->data[(deda)->begin + (deda)->count] = (item);\
+    (deda)->data[((deda)->begin + (deda)->count) % (deda)->capacity] = (item);\
     (deda)->count += 1;\
 }\
 
 #define deda_pop(deda, result) {\
     if ((deda)->count > 0) {\
         (deda)->count -= 1;\
-        *(result) = (deda)->data[(deda)->begin + (deda)->count];\
+        *(result) = (deda)->data[((deda)->begin + (deda)->count) % (deda)->capacity];\
         if ((deda)->count <= (deda)->capacity * DEDA_SHRINK_THRESHOLD) {\
             _deda_shrink(deda);\
         }\
@@ -87,8 +87,11 @@
 }\
 
 #define deda_push_front(deda, item) {\
-    if ((deda)->begin <= 0) {\
+    if ((deda)->count >= (deda)->capacity) {\
         _deda_grow(deda);\
+    }\
+    if ((deda)->begin == 0) {\
+        (deda)->begin = (deda)->capacity;\
     }\
     (deda)->begin -= 1;\
     (deda)->data[(deda)->begin] = (item);\
@@ -99,7 +102,7 @@
     if ((deda)->count > 0) {\
         (deda)->count -= 1;\
         *(result) = (deda)->data[(deda)->begin];\
-        (deda)->begin += 1;\
+        (deda)->begin = ((deda)->begin + 1) % (deda)->capacity;\
         if ((deda)->count <= (deda)->capacity * DEDA_SHRINK_THRESHOLD) {\
             _deda_shrink(deda);\
         }\
@@ -108,24 +111,28 @@
 
 #define deda_get_at(deda, idx, result) {\
     assert((((idx) >= 0) && ((idx) < (deda).count)) && "Index out of bounds!");\
-    *(result) = (deda).data[(idx) + (deda).begin];\
+    *(result) = (deda).data[((idx) + (deda).begin) % (deda).capacity];\
 }\
 
 #define deda_put_at(deda, idx, item) {\
     assert((((idx) >= 0) && ((idx) < (deda).count)) && "Index out of bounds!");\
-    (deda).data[(idx) + (deda).begin] = (item);\
+    (deda).data[((idx) + (deda).begin) % (deda)->capacity] = (item);\
 }\
 
-#define _deda_shift_left(deda, idx) {\
-    for (size_t j = (deda)->begin; j <= (deda)->begin + (idx); j++) {\
-        (deda)->data[j-1] = (deda)->data[j];\
+#define _deda_move(deda, start, end, off) {\
+    if ((off) > 0) {\
+        for (size_t j = end; (j <= end) && (j >= start); j--) {\
+            (deda)->data[(j + (deda)->begin + off) % (deda)->capacity] = (deda)->data[(j + (deda)->begin) % (deda)->capacity];\
+        }\
     }\
-    (deda)->begin -= 1;\
-}\
-
-#define _deda_shift_right(deda, idx) {\
-    for (size_t j = (deda)->begin + (deda)->count; j > (deda)->begin + (idx); j--) {\
-        (deda)->data[j] = (deda)->data[j-1];\
+    else if ((off) < 0) {\
+        for (int j = start; j <= end; j++) {\
+            int idx = (j + (int)(deda)->begin + off) % (int)(deda)->capacity;\
+            if (idx < 0) {\
+               idx += (int)(deda)->capacity;\
+            }\
+            (deda)->data[idx] = (deda)->data[(j + (deda)->begin) % (deda)->capacity];\
+        }\
     }\
 }\
 
@@ -134,20 +141,14 @@
         _deda_grow(deda);\
     }\
     if ((idx) >= (deda)->count >> 1) {\
-        if ((deda)->begin + (deda)->count >= (deda)->capacity) {\
-            _deda_shift_left(deda, idx);\
-        }\
-        else {\
-            _deda_shift_right(deda, idx);\
-        }\
+        _deda_move(deda, idx, (deda)->count - 1, 1);\
     }\
     else {\
-        if ((deda)->begin <= 0) {\
-            _deda_shift_right(deda, idx);\
+        _deda_move(deda, 0, idx, -1);\
+        if ((deda)->begin == 0) {\
+            (deda)->begin = (deda)->capacity;\
         }\
-        else {\
-            _deda_shift_left(deda, idx);\
-        }\
+        (deda)->begin -= 1;\
     }\
 }\
 
@@ -161,43 +162,75 @@
     }\
     else {\
         _deda_make_room(deda, idx);\
-        (deda)->data[(idx) + (deda)->begin] = (item);\
+        (deda)->data[((idx) + (deda)->begin) % (deda)->capacity] = (item);\
         (deda)->count += 1;\
-    }\
-}\
-
-#define _deda_move(deda, start, end, off) {\
-    if ((off) > 0) {\
-        for (size_t j = end; j >= start; j--) {\
-            (deda)->data[j + off] = (deda)->data[j];\
-        }\
-    }\
-    else if ((off) < 0) {\
-        for (size_t j = start; j <= end; j++) {\
-            (deda)->data[j + off] = (deda)->data[j];\
-        }\
     }\
 }\
 
 #define deda_delete_at(deda, idx) {\
     assert((((idx) >= 0) && ((idx) < (deda)->count)) && "Index out of bounds!");\
     if ((idx) == 0) {\
-        (deda)->begin += 1;\
-    }\
-    else if ((idx) == (deda)->count - 1) {\
-        goto update;\
+        (deda)->begin = ((deda)->begin + 1) % (deda)->capacity;\
     }\
     else if ((idx) >= (deda)->count >> 1) {\
-        _deda_move(deda, (deda)->begin + (idx) + 1, (deda)->begin + (deda)->count - 1, -1);\
+        _deda_move(deda, (idx) + 1, (deda)->count - 1, -1);\
     }\
-    else {\
-        _deda_move(deda, (deda)->begin, (deda)->begin + (idx) - 1, 1);\
-        (deda)->begin += 1;\
+    else if ((idx) != (deda)->count - 1) {\
+        _deda_move(deda, 0, (idx) - 1, 1);\
+        (deda)->begin = ((deda)->begin + 1) % (deda)->capacity;\
     }\
-update:\
     (deda)->count -= 1;\
     if ((deda)->count <= (deda)->capacity * DEDA_SHRINK_THRESHOLD) {\
         _deda_shrink(deda);\
+    }\
+}\
+
+#define deda_pop_at(deda, idx, res) {\
+    assert((((idx) >= 0) && ((idx) < (deda)->count)) && "Index out of bounds!");\
+    *(res) = (deda)->data[(idx + (deda)->begin) % (deda)->capacity];\
+    deda_delete_at(deda, idx);\
+}\
+
+#define deda_debug(deda, fmt) {\
+    printf("Begin   : %zu\n", (deda).begin);\
+    printf("Count   : %zu\n", (deda).count);\
+    printf("Capacity: %zu\n", (deda).capacity);\
+    if ((deda).count > 0) {\
+        typeof(*deda.data) res;\
+        for (size_t i = 0; i < (deda).count; i++) {\
+            deda_get_at(deda, i, &res);\
+            printf(fmt, res);\
+        }\
+        printf("\n");\
+        size_t last = ((deda).begin + (deda).count - 1) % (deda).capacity;\
+        printf("[");\
+        for (size_t i = 0; i < (deda).capacity; i++) {\
+            if (\
+                   ((last >= (deda).begin) && ((i >= (deda).begin) && (i <= last)))\
+                || ((last <  (deda).begin) && ((i >= (deda).begin) || (i <= last)))\
+            ) {\
+                printf(fmt, (deda).data[i]);\
+            }\
+            else {\
+                printf(" ");\
+            }\
+        }\
+        printf("]");\
+        printf("\n");\
+        printf("[");\
+        for (size_t i = 0; i < (deda).capacity; i++) {\
+            if (i == (deda).begin) {\
+                printf("^");\
+            }\
+            else if (i == last) {\
+                printf("$");\
+            }\
+            else {\
+                printf(" ");\
+            }\
+        }\
+        printf("]");\
+        printf("\n");\
     }\
 }\
 
