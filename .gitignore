@@ -1,2 +1,3 @@
-*.swp
-example
+**/*.swp
+da/example
+deda/example
