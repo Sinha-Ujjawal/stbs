@@ -72,7 +72,7 @@
     if ((da)->count > 0) {\
         (da)->count -= 1;\
         *(result) = (da)->data[(da)->count];\
-        if ((da)->count <= (da)->capacity * DA_SHRINK_THRESHOLD) {\
+        if (((da)->count > DA_INIT_CAP) && ((da)->count <= (da)->capacity * DA_SHRINK_THRESHOLD)) {\
             _da_shrink(da);\
         }\
     }\
@@ -130,7 +130,7 @@
         _da_move(da, (idx) + 1, (da)->count - 1, -1);\
     }\
     (da)->count -= 1;\
-    if ((da)->count <= (da)->capacity * DA_SHRINK_THRESHOLD) {\
+    if (((da)->count > DA_INIT_CAP) && ((da)->count <= (da)->capacity * DA_SHRINK_THRESHOLD)) {\
         _da_shrink(da);\
     }\
 }\

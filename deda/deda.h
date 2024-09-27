@@ -83,7 +83,7 @@
     if ((deda)->count > 0) {\
         (deda)->count -= 1;\
         *(result) = (deda)->data[((deda)->begin + (deda)->count) % (deda)->capacity];\
-        if ((deda)->count <= (deda)->capacity * DEDA_SHRINK_THRESHOLD) {\
+        if (((deda)->count > DEDA_INIT_CAP) && ((deda)->count <= (deda)->capacity * DEDA_SHRINK_THRESHOLD)) {\
             _deda_shrink(deda);\
         }\
     }\
@@ -106,7 +106,7 @@
         (deda)->count -= 1;\
         *(result) = (deda)->data[(deda)->begin];\
         (deda)->begin = ((deda)->begin + 1) % (deda)->capacity;\
-        if ((deda)->count <= (deda)->capacity * DEDA_SHRINK_THRESHOLD) {\
+        if (((deda)->count > DEDA_INIT_CAP) && ((deda)->count <= (deda)->capacity * DEDA_SHRINK_THRESHOLD)) {\
             _deda_shrink(deda);\
         }\
     }\
@@ -183,7 +183,7 @@
         (deda)->begin = ((deda)->begin + 1) % (deda)->capacity;\
     }\
     (deda)->count -= 1;\
-    if ((deda)->count <= (deda)->capacity * DEDA_SHRINK_THRESHOLD) {\
+    if (((deda)->count > DEDA_INIT_CAP) && ((deda)->count <= (deda)->capacity * DEDA_SHRINK_THRESHOLD)) {\
         _deda_shrink(deda);\
     }\
 }\
