@@ -11,6 +11,7 @@
 
 #ifdef SV_IMPLEMENTATION
 #include <string.h>
+#include <ctype.h>
 #include <assert.h>
 
 #define SV_FMT "%.*s"
@@ -20,6 +21,11 @@ typedef struct {
     char*  data;
     size_t count;
 } sv;
+
+typedef struct {
+  sv fst;
+  sv snd;
+} sv_pair;
 
 sv sv_from_ptr(char* data, size_t count) {
     sv ret = {0};
@@ -46,17 +52,42 @@ sv sv_drop_n(sv s, size_t n) {
     return sv_from_ptr(s.data + n, s.count - n);
 }
 
-sv sv_split_at(sv* s, size_t idx) {
-    if (s->count == 0) {
-        sv ret = {0};
+sv sv_trim_left(sv s) {
+    size_t idx = 0;
+    while (idx < s.count && isspace(s.data[idx])) {
+        idx++;
+    }
+    return sv_drop_n(s, idx);
+}
+
+sv_pair sv_split_at(sv s, size_t idx) {
+    sv_pair ret = {0};
+    if (s.count == 0) {
         return ret;
     }
-    if (idx >= s->count) {
-        idx = s->count - 1;
+    if (idx >= s.count) {
+        idx = s.count - 1;
     }
-    sv ret = sv_from_ptr(s->data, idx + 1);
-    s->data  += idx + 1;
-    s->count -= idx + 1;
+    ret.fst = sv_from_ptr(s.data, idx + 1);
+    ret.snd = sv_from_ptr(s.data + idx + 1, s.count - idx - 1);
+    return ret;
+}
+
+sv_pair sv_split_by_char(sv s, char c) {
+    sv_pair ret = {0};
+    if (s.count == 0) {
+        return ret;
+    }
+    size_t idx = 0;
+    while (idx < s.count && s.data[idx] != c) {
+        idx++;
+    }
+    if (idx >= s.count) {
+        ret.fst = s;
+    } else {
+        ret.fst = sv_from_ptr(s.data, idx);
+        ret.snd = sv_from_ptr(s.data + idx + 1, s.count - idx - 1);
+    }
     return ret;
 }
 
