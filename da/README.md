@@ -11,8 +11,13 @@ All the functions exposed are C macros
 | da\_type        | (name, type)      | declares a da array type                                    |
 | da\_init        | (da)              | initialize the da array with initial values                 |
 | da\_push        | (da, item)        | appends the item at the end of the da array                 |
+| da\_grow        | (da)              | grows the dynamic array by 1                                |
 | da\_pop         | (da)              | removes and returns the item from the end of the da array   |
-| da\_get\_at     | (da, idx result)  | get and store the item at index `idx` to result variable    |
+| da\_shrink      | (da)              | shrinks the dynamic array by 1                              |
+| da\_get\_at     | (da, idx, result) | get and store the item at index `idx` to result variable    |
+| da\_index       | (da, idx)         | helper macro to index into the dynamic array                |
+| da\_first       | (da)              | helper macro to index first element in the da               |
+| da\_last        | (da)              | helper macro to index last element in the da                |
 | da\_put\_at     | (da, idx, item)   | replace the old item with the new one at index `idx`        |
 | da\_insert\_at  | (da, idx, item)   | insert the item at index `idx`                              |
 | da\_delete\_at  | (da, idx)         | removes the item at index `idx`                             |
