@@ -12,7 +12,7 @@ This is a stb style library implementing [String View](https://stackoverflow.com
 | sv\_drop\_n(sv, n)              | creates a new string view from a given string view, but just taking n elements from the end `sv[n:]`                                                                     |
 | sv\_trim\_left(sv, idx)         | trims the string view from left                                                                                                                                          |
 | sv\_split\_at(sv, idx)          | splits the given string view at index idx. It returns a pair string views [0..idx] and [idx+1..]                                                                         |
-| sv\_split\_by\_char(sv, char)   | splits the given string view by character. It returns a pair string views [0..idx] and [idx+2..], where idx is the first location of the character. If the character is not present then it returns pair with fst set to nothing and snd set to the actual string view |
+| sv\_split\_by\_char(sv, char)   | splits the given string view by character. It returns a pair string views [0..idx] and [idx+2..], where idx is the first location of the character. If the character is not present then it returns pair with fst set to the input string view and snd set to nothing |
 | sv\_substring(sv, begin ,count) | creates a new string view that is a substring. `sv[begin:begin+count]`                                                                                                   |
 
 # Example program
