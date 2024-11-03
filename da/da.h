@@ -47,7 +47,7 @@
 
 #define _da_resize(da, new_capacity) {\
     (da)->capacity = (new_capacity);\
-    (da)->data     = realloc((da)->data, new_capacity);\
+    (da)->data     = realloc((da)->data, sizeof(*(da)->data) * new_capacity);\
 }\
 
 #define _da_grow(da) {\
@@ -60,12 +60,28 @@
     _da_resize(da, new_capacity);\
 }\
 
+#define da_grow(da) {\
+    if ((da)->count >= (da)->capacity) {\
+        _da_grow(da);\
+    }\
+    (da)->count += 1;\
+}\
+
 #define da_push(da, item) {\
     if ((da)->count >= (da)->capacity) {\
         _da_grow(da);\
     }\
     (da)->data[(da)->count] = (item);\
     (da)->count += 1;\
+}\
+
+#define da_shrink(da) {\
+    if ((da)->count > 0) {\
+        (da)->count -= 1;\
+        if (((da)->count > DA_INIT_CAP) && ((da)->count <= (da)->capacity * DA_SHRINK_THRESHOLD)) {\
+            _da_shrink(da);\
+        }\
+    }\
 }\
 
 #define da_pop(da, result) {\
@@ -77,6 +93,11 @@
         }\
     }\
 }\
+
+#define da_index(da, idx) (da)->data[(idx)]
+
+#define da_first(da) da_index(da, 0)
+#define da_last(da)  da_index(da, (da)->count - 1)
 
 #define da_get_at(da, idx, result) {\
     assert((((idx) >= 0) && ((idx) < (da).count)) && "Index out of bounds!");\
