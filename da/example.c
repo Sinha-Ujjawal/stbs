@@ -7,7 +7,7 @@
 
 da_type(string_da, char);
 da_type(int_da, int);
- 
+
 void example1() {
     printf("------------------------------------Example 1--------------------------------------\n");
     string_da sda = {0};

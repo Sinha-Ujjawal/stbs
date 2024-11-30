@@ -7,7 +7,7 @@
 
 deda_type(string_deda, char);
 deda_type(int_deda, int);
- 
+
 void example1() {
     printf("------------------------------------Example 1--------------------------------------\n");
     string_deda sdeda = {0};
