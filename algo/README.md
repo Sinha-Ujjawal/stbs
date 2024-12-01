@@ -10,7 +10,6 @@ This is only for recreational purpose and not for any real world use. If you sti
 | bisect\_right   | (target, low, high, fn\_key)              | bisect\_right impl. similar to (bisect library)[https://docs.python.org/3/library/bisect.html] in python |
 | heapify         | (arr, count, fn\_compare, root)           | heapify impl.     |
 | build\_heap     | (arr, count, fn\_compare)                 | build\_heap impl. |
-| build\_heap     | (arr, count, fn\_compare)                 | build\_heap impl. |
 | heapsort        | (arr, count, fn\_compare)                 | heapsort impl.    |
 
 # Example program
