@@ -8,6 +8,7 @@ This repository is intended to store all my [stb](https://github.com/nothings/st
 | [deda](./deda/deda.h)    | Implementation of [Double Ended Dynamic Array](https://en.wikipedia.org/wiki/Double-ended_queue) in C.  |
 | [sv](./sv/sv.h)          | Implementation of [String View](https://stackoverflow.com/questions/20803826/what-is-string-view) in C. |
 | [arena](./arena/arena.h) | Implementation of [Arena](https://github.com/tsoding/arena)                                             |
+| [algo](./algo/algo.h)    | Implementation of basic algorithms                                                                      |
 
 ## Copyrights
 Licensed under [@MIT](.LICENSE)
