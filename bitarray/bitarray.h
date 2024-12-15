@@ -24,8 +24,13 @@ void bitarray_print(bitarray bits);
 #include <stdlib.h>
 #include <string.h>
 
-#define BITARRAY_REALLOC realloc
+#ifndef BITARRAY_REALLOC
+#define BITARRAY_REALLOC(old_ptr, old_bytes, new_bytes) realloc((old_ptr), (new_bytes))
+#endif //BITARRAY_REALLOC
+
+#ifndef BITARRAY_MEMSET
 #define BITARRAY_MEMSET  memset
+#endif //BITARRAY_MEMSET
 
 struct bitarray {
     char   *buckets;
@@ -35,8 +40,9 @@ struct bitarray {
 };
 
 void bitarray_reset(bitarray *bits, size_t capacity) {
-    bits->num_buckets = ceil(capacity / 8.0);
-    bits->buckets = BITARRAY_REALLOC(bits->buckets, bits->num_buckets);
+    size_t new_num_buckets = ceil(capacity / 8.0);
+    bits->buckets = BITARRAY_REALLOC((void *)bits->buckets, bits->num_buckets, new_num_buckets);
+    bits->num_buckets = new_num_buckets;
     BITARRAY_MEMSET(bits->buckets, 0, bits->num_buckets);
     bits->count = 0;
     bits->capacity = capacity;

@@ -18,11 +18,25 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#ifndef DEDA_INIT_CAP
 #define DEDA_INIT_CAP          64
+#endif //DEDA_INIT_CAP
+
+#ifndef DEDA_GROWTH_FACTOR
 #define DEDA_GROWTH_FACTOR     2.5
+#endif //DEDA_GROWTH_FACTOR
+
+#ifndef DEDA_SHRINK_FACTOR
 #define DEDA_SHRINK_FACTOR     0.5
+#endif //DEDA_SHRINK_FACTOR
+
+#ifndef DEDA_SHRINK_THRESHOLD
 #define DEDA_SHRINK_THRESHOLD  0.25
+#endif //DEDA_SHRINK_THRESHOLD
+
+#ifndef DEDA_BEGIN_POSN_FACTOR
 #define DEDA_BEGIN_POSN_FACTOR 0.5
+#endif //DEDA_BEGIN_POSN_FACTOR
 
 /* `deda` is a structure matching below signature-
     `t` is a type parameter
@@ -35,6 +49,14 @@
     };
 */
 
+#ifndef DEDA_REALLOC
+#define DEDA_REALLOC(old_ptr, old_bytes, new_bytes) realloc((old_ptr), (new_bytes))
+#endif //DEDA_REALLOC
+
+#ifndef DEDA_FREE
+#define DEDA_FREE(old_ptr) free((old_ptr))
+#endif //DEDA_FREE
+
 #define deda_type(name, t) typedef struct {\
     size_t begin;\
     size_t count;\
@@ -43,19 +65,19 @@
 } name;\
 
 #define deda_init(deda) {\
+    (deda)->data     = DEDA_REALLOC((deda)->data, sizeof(*(deda)->data) * (deda)->capacity, sizeof(*(deda)->data) * DEDA_INIT_CAP);\
     (deda)->capacity = DEDA_INIT_CAP;\
     (deda)->begin    = DEDA_INIT_CAP * DEDA_BEGIN_POSN_FACTOR;\
     (deda)->count    = 0;\
-    (deda)->data     = malloc(sizeof(*(deda)->data) * (deda)->capacity);\
 }\
 
 #define _deda_resize(deda, new_capacity) {\
     size_t new_begin              = (new_capacity) * DEDA_BEGIN_POSN_FACTOR;\
-    typeof((deda)->data) new_data = malloc(sizeof(*(deda)->data) * (new_capacity));\
+    typeof((deda)->data) new_data = DEDA_REALLOC((deda)->data, sizeof(*(deda)->data) * (deda)->capacity, sizeof(*(deda)->data) * (new_capacity));\
     for (size_t i = 0; i < (deda)->count; i++) {\
         new_data[(new_begin + i) % (new_capacity)] = (deda)->data[((deda)->begin + i) % (deda)->capacity];\
     }\
-    free((deda)->data);\
+    DEDA_FREE((deda)->data);\
     (deda)->capacity = (new_capacity);\
     (deda)->begin    = new_begin;\
     (deda)->data     = new_data;\
