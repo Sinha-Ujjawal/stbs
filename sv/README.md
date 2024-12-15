@@ -19,6 +19,8 @@ This is a stb style library implementing [String View](https://stackoverflow.com
 | sv\_find(self, other)               | finds the first index in string view (self), that starts with the other string view      |
 | sv\_split\_by\_sv(self, other)      | splits a string view into two parts where the first part ends with the other string view |
 | sv\_split\_by\_cstr(self, other)    | splits a string view into two parts where the first part ends with the other ctr         |
+| sv\_parse\_long(self, long\_ptr, end\_ptr)           | parses long integers from string view. It uses strtol for its impl.        |
+| sv\_parse\_longlong(self, long\_long\_ptr, end\_ptr) | parses long long integers from string view. It uses strtoll for its impl.  |
 
 # Example program
 ```C

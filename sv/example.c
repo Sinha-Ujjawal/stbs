@@ -194,6 +194,44 @@ void test_sv_starts_with() {
     assert(sv_starts_with(empty_input, empty_prefix) == true);
 }
 
+void test_sv_parse_long() {
+    printf("test_sv_parse_long\n");
+    long parsed_value;
+
+    // Parsing positive value
+    assert(sv_parse_long(sv_from_cstr("123"), &parsed_value, NULL) == true);
+    assert(parsed_value == 123);
+
+    // Parsing negative value
+    assert(sv_parse_long(sv_from_cstr("-456"), &parsed_value, NULL) == true);
+    assert(parsed_value == -456);
+
+    // Parsing invalid string
+    assert(sv_parse_long(sv_from_cstr("something not a long"), &parsed_value, NULL) == false);
+
+    // Parsing empty
+    assert(sv_parse_long(sv_from_cstr(""), &parsed_value, NULL) == false);
+}
+
+void test_sv_parse_longlong() {
+    printf("test_sv_parse_longlong\n");
+    long long parsed_value;
+
+    // Parsing positive value
+    assert(sv_parse_longlong(sv_from_cstr("123"), &parsed_value, NULL) == true);
+    assert(parsed_value == 123);
+
+    // Parsing negative value
+    assert(sv_parse_longlong(sv_from_cstr("-456"), &parsed_value, NULL) == true);
+    assert(parsed_value == -456);
+
+    // Parsing invalid string
+    assert(sv_parse_longlong(sv_from_cstr("something not a long"), &parsed_value, NULL) == false);
+
+    // Parsing empty
+    assert(sv_parse_longlong(sv_from_cstr(""), &parsed_value, NULL) == false);
+}
+
 int main() {
     test_sv_from_ptr();
     test_sv_from_cstr();
@@ -205,6 +243,8 @@ int main() {
     test_sv_substring();
     test_sv_find();
     test_sv_starts_with();
+    test_sv_parse_long();
+    test_sv_parse_longlong();
     printf("All tests (including edge cases) passed!\n");
     return 0;
 }
