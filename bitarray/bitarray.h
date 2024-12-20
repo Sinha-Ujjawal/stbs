@@ -64,7 +64,7 @@ bool bitarray_set(bitarray *bits, size_t posn) {
 
 bool bitarray_unset(bitarray *bits, size_t posn) {
     size_t bucket_posn = posn / 8;
-    if (bucket_posn >= bits->capacity) {
+    if (bucket_posn >= bits->num_buckets) {
         return false; // out of bounds
     }
     size_t posn_in_bucket = posn % 8;
@@ -79,7 +79,7 @@ bool bitarray_unset(bitarray *bits, size_t posn) {
 
 bool bitarray_isset(bitarray bits, size_t posn) {
     size_t bucket_posn = posn / 8;
-    if (bucket_posn >= bits.capacity) {
+    if (bucket_posn >= bits->num_buckets) {
         return false; // out of bounds
     }
     size_t posn_in_bucket = posn % 8;
