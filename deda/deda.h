@@ -1,15 +1,25 @@
 // Copyright 2024 <Sinha-Ujjawal>
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
 //
-// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
 //
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-// IN THE SOFTWARE.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
 
 #ifndef DEDA_H
 #define DEDA_H
@@ -49,12 +59,12 @@
     };
 */
 
-#ifndef DEDA_REALLOC
-#define DEDA_REALLOC(old_ptr, old_bytes, new_bytes) realloc((old_ptr), (new_bytes))
-#endif //DEDA_REALLOC
+#ifndef DEDA_MALLOC
+#define DEDA_MALLOC malloc
+#endif //DEDA_MALLOC
 
 #ifndef DEDA_FREE
-#define DEDA_FREE(old_ptr) free((old_ptr))
+#define DEDA_FREE free
 #endif //DEDA_FREE
 
 #define deda_type(name, t) typedef struct {\
@@ -63,9 +73,39 @@
     size_t capacity;\
     t*     data;\
 } name;\
+void deda_init_##name(name *deda) {\
+    deda_init(deda);\
+}\
+void deda_push_##name(name *deda, t item) {\
+    deda_push(deda, item);\
+}\
+void deda_pop_##name(name *deda, t *result) {\
+    deda_pop(deda, result);\
+}\
+void deda_push_front_##name(name *deda, t item) {\
+    deda_push_front(deda, item);\
+}\
+void deda_pop_front_##name(name *deda, t *result) {\
+    deda_pop_front(deda, result);\
+}\
+void deda_get_at_##name(name deda, size_t idx, t *result) {\
+    deda_get_at(deda, idx, result);\
+}\
+void deda_put_at_##name(name *deda, size_t idx, t item) {\
+    deda_put_at(deda, idx, item);\
+}\
+void deda_insert_at_##name(name *deda, size_t idx, t item) {\
+    deda_insert_at(deda, idx, item);\
+}\
+void deda_delete_at_##name(name *deda, size_t idx) {\
+    deda_delete_at(deda, idx);\
+}\
+void deda_pop_at_##name(name *deda, size_t idx, t *result) {\
+    deda_pop_at(deda, idx, result);\
+}\
 
 #define deda_init(deda) {\
-    (deda)->data     = DEDA_REALLOC((deda)->data, sizeof(*(deda)->data) * (deda)->capacity, sizeof(*(deda)->data) * DEDA_INIT_CAP);\
+    (deda)->data     = DEDA_MALLOC(sizeof(*(deda)->data) * DEDA_INIT_CAP);\
     (deda)->capacity = DEDA_INIT_CAP;\
     (deda)->begin    = DEDA_INIT_CAP * DEDA_BEGIN_POSN_FACTOR;\
     (deda)->count    = 0;\
@@ -73,7 +113,7 @@
 
 #define _deda_resize(deda, new_capacity) {\
     size_t new_begin              = (new_capacity) * DEDA_BEGIN_POSN_FACTOR;\
-    typeof((deda)->data) new_data = DEDA_REALLOC((deda)->data, sizeof(*(deda)->data) * (deda)->capacity, sizeof(*(deda)->data) * (new_capacity));\
+    typeof((deda)->data) new_data = DEDA_MALLOC(sizeof(*(deda)->data) * (new_capacity));\
     for (size_t i = 0; i < (deda)->count; i++) {\
         new_data[(new_begin + i) % (new_capacity)] = (deda)->data[((deda)->begin + i) % (deda)->capacity];\
     }\
@@ -140,8 +180,8 @@
 }\
 
 #define deda_put_at(deda, idx, item) {\
-    assert((((idx) >= 0) && ((idx) < (deda).count)) && "Index out of bounds!");\
-    (deda).data[((idx) + (deda).begin) % (deda)->capacity] = (item);\
+    assert((((idx) >= 0) && ((idx) < (deda)->count)) && "Index out of bounds!");\
+    (deda)->data[((idx) + (deda)->begin) % (deda)->capacity] = (item);\
 }\
 
 #define _deda_move(deda, start, end, off) {\

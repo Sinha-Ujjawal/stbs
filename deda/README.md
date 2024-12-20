@@ -13,12 +13,24 @@ All the functions exposed are C macros
 | deda\_push        | (deda, item)        | appends the item at the end of the deda array                 |
 | deda\_pop         | (deda)              | removes and returns the item from the end of the deda array   |
 | deda\_push\_front | (deda, item)        | prepends the item at the front of the deda array              |
-| deda\_pop\_front  | (deda)              | removes and returns the item from the front of the deda array |
+| deda\_pop\_front  | (deda, result)      | removes and returns the item from the front of the deda array |
 | deda\_get\_at     | (deda, idx result)  | get and store the item at index `idx` to result variable      |
 | deda\_put\_at     | (deda, idx, item)   | replace the old item with the new one at index `idx`          |
 | deda\_insert\_at  | (deda, idx, item)   | insert the item at index `idx`                                |
 | deda\_delete\_at  | (deda, idx)         | removes the item at index `idx`                               |
 | deda\_pop\_at     | (deda, idx, result) | stores the item at `idx` to result and deletes it             |
+
+`deda_type(name, type)` macro also creates impl. specific to the type as below:
+  - deda\_init_##name
+  - deda\_push_##name
+  - deda\_pop_##name
+  - deda\_push\_front_##name
+  - deda\_pop\_front_##name
+  - deda\_get\_at_##name
+  - deda\_put\_at_##name
+  - deda\_insert\_at_##name
+  - deda\_delete\_at_##name
+  - deda\_pop\_at_##name
 
 # Example program
 ```C

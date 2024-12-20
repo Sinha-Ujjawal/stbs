@@ -13,7 +13,7 @@ All the functions exposed are C macros
 | da\_push             | (da, item)          | appends the item at the end of the da array                 |
 | da\_ensure\_capacity | (da, min\_capacity) | grows the dynamic array to ensure the minimum capacity      |
 | da\_grow             | (da)                | grows the dynamic array by 1 also set the count by 1        |
-| da\_pop              | (da)                | removes and returns the item from the end of the da array   |
+| da\_pop              | (da, result)        | removes and returns the item from the end of the da array   |
 | da\_shrink           | (da)                | shrinks the dynamic array by 1                              |
 | da\_get\_at          | (da, idx, result)   | get and store the item at index `idx` to result variable    |
 | da\_index            | (da, idx)           | helper macro to index into the dynamic array                |
@@ -23,6 +23,19 @@ All the functions exposed are C macros
 | da\_insert\_at       | (da, idx, item)     | insert the item at index `idx`                              |
 | da\_delete\_at       | (da, idx)           | removes the item at index `idx`                             |
 | da\_pop\_at          | (da, idx, result)   | stores the item at `idx` to result and deletes it           |
+
+`da_type(name, type)` macro also creates impl. specific to the type as below:
+  - da\_init_##name
+  - da\_push_##name
+  - da\_ensure\_capacity_##name
+  - da\_grow_##name
+  - da\_pop_##name
+  - da\_shrink_##name
+  - da\_get\_at_##name
+  - da\_put\_at_##name
+  - da\_insert\_at_##name
+  - da\_delete\_at_##name
+  - da\_pop\_at_##name
 
 # Example program
 ```C

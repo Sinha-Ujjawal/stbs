@@ -3,14 +3,20 @@
 #define ARENA_IMPLEMENTATION
 #include "arena/arena.h"
 
+void *context_arena_alloc(size_t bytes);
+
 #define DEDA_IMPLEMENTATION
-#define DEDA_REALLOC(old_ptr, old_bytes, new_bytes) context_arena_realloc((old_ptr), (old_bytes), (new_bytes))
-#define DEDA_FREE(old_ptr)
+#define DEDA_MALLOC context_arena_alloc
+#define DEDA_FREE
 #include "deda/deda.h"
 
 deda_type(int_deque, int);
 
 arena context_arena = {0};
+void *context_arena_alloc(size_t bytes) {
+    printf("Allocating %zu byte(s) of memory from context_arena_realloc\n", bytes);
+    return arena_alloc(&context_arena, bytes);
+}
 void *context_arena_realloc(void *old_ptr, size_t old_bytes, size_t new_bytes) {
     printf("Allocating %zu byte(s) of memory from context_arena_realloc\n", new_bytes);
     printf("Previously the size of old_ptr was: %zu byte(s)\n", old_bytes);
