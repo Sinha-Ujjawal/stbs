@@ -10,6 +10,7 @@ This repository is intended to store all my [stb](https://github.com/nothings/st
 | [arena](./arena/arena.h)          | Implementation of [Arena](https://github.com/tsoding/arena)                                             |
 | [algo](./algo/algo.h)             | Implementation of basic algorithms                                                                      |
 | [bitarray](./bitarray/bitarray.h) | Implementation of [Bitarray](https://en.wikipedia.org/wiki/Bit_array)                                   |
+| [hashtable](./ht/ht.h)            | Implementation of [Hash table using Open Addressing](https://en.wikipedia.org/wiki/Open_addressing)     |
 
 ## Copyrights
 Licensed under [@MIT](.LICENSE)
