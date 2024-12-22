@@ -3,11 +3,11 @@ This is a [stb](https://github.com/nothings/stb) style library implementing [Has
 
 # Usage:
 User is supposed to call a single macro `ht_type` with below arguments
-    1. NAME:         name of the hash table type
-    2. KEY:          type of the key in the hash table
-    3. VALUE:        type of the value in the hash table
-    4. HASH\_FN:     hash function/macro to be used for KEY
-    5. IS\_KEY\_EQL: function/macro to check if two keys are equal
+1. NAME:         name of the hash table type
+2. KEY:          type of the key in the hash table
+3. VALUE:        type of the value in the hash table
+4. HASH\_FN:     hash function/macro to be used for KEY
+5. IS\_KEY\_EQL: function/macro to check if two keys are equal
 
 Example:
 1. Hash table for key as integer, and value as boolean. There is already a hash function implementation for integera in the library. See `hash_int`.
