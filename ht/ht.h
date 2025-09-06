@@ -155,7 +155,7 @@ void ht_delete_##NAME(NAME *ht, KEY key, VALUE *result) {\
     size_t j = i;\
     while (true) {\
         j = (j + 1) % ht->capacity;\
-        if (!ht->data[i].is_occupied) break;\
+        if (!ht->data[j].is_occupied) break;\
         size_t k = ht_pmod(HASH_FN(ht->data[i].key), ht->capacity);\
         /* determine if k lies cyclically in (i,j] */\
         /* i ≤ j: |    i..k..j    |                */\
